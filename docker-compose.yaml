@@ -1,0 +1,27 @@
+# docker-compose.yaml
+version: "3"
+services:
+  db:
+    image: mysql:5.7
+    container_name: db
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --skip_character_set_client_handshake --default_time_zone='+0:00'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1qaz2wsx
+      MYSQL_DATABASE: ethereum
+    ports:
+      - "3306:3306"
+    volumes:
+      - ethereum_data_volume:/var/lib/mysqlcli
+      - ./infra/sql:/docker-entrypoint-initdb.d
+  srv:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: srv
+    restart: always
+    network_mode: host
+    depends_on:
+      - db
+volumes:
+  ethereum_data_volume:

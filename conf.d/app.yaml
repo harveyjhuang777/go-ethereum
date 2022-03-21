@@ -1,0 +1,6 @@
+ops_config:
+  mysql_ops:
+    address: 'localhost:3306'
+    username: 'root'
+    password: '1qaz2wsx'
+    database: 'ethereum'

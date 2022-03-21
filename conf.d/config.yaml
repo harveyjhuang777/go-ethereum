@@ -1,0 +1,7 @@
+app_config:
+  log_config:
+    name: "Local-Gateway"
+    env: "DEV"
+    level: "debug"
+  gin_config:
+    address: ":8888"
