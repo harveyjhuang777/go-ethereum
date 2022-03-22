@@ -1,4 +1,4 @@
-package mysqlcli
+package dbcli
 
 import (
 	"context"

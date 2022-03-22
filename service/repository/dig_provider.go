@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/harveyjhuang777/go-ethereum/service/model"
-	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/mysqlcli"
+	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/dbcli"
 	"github.com/harveyjhuang777/go-ethereum/service/util/logger"
 )
 
@@ -19,8 +19,10 @@ var (
 func NewRepository(in digIn) digOut {
 	once.Do(func() {
 		self = &packet{
-			in:     in,
-			digOut: digOut{},
+			in: in,
+			digOut: digOut{
+				BlockRepository: newBlockRepository(in),
+			},
 		}
 	})
 
@@ -47,7 +49,7 @@ func Migration(db *gorm.DB) error {
 type digIn struct {
 	dig.In
 
-	DB     mysqlcli.IMySQLClient
+	DB     dbcli.IMySQLClient
 	Logger logger.ILogger
 }
 
@@ -59,4 +61,6 @@ type packet struct {
 
 type digOut struct {
 	dig.Out
+
+	BlockRepository IBlock
 }

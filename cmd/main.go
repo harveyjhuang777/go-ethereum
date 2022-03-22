@@ -10,7 +10,7 @@ import (
 	"github.com/harveyjhuang777/go-ethereum/service/app"
 	"github.com/harveyjhuang777/go-ethereum/service/binder"
 	"github.com/harveyjhuang777/go-ethereum/service/repository"
-	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/mysqlcli"
+	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/dbcli"
 )
 
 var (
@@ -23,7 +23,7 @@ type SrvApp struct {
 	dig.In
 
 	RestService app.IService
-	MySQLClient mysqlcli.IMySQLClient
+	MySQLClient dbcli.IMySQLClient
 }
 
 func initServer(app SrvApp) {

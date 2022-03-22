@@ -28,7 +28,7 @@ func NewBlock(in digIn) digOut {
 type digIn struct {
 	dig.In
 
-	MySQLCli    mysqlcli.IMySQLClient
+	MySQLCli    dbcli.IMySQLClient
 	IdGenerator snowflake.IIDGenerator
 }
 
