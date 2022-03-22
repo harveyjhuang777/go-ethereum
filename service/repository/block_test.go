@@ -44,6 +44,7 @@ func (s *blockTestSuite) SetupSuite() {
 	}))
 
 	// clear table
+	s.Require().Nil(Migration(s.app.DB.Session()))
 	s.Require().Nil(s.app.DB.Session().Where("1 = 1").Delete(&model.Block{}).Error)
 }
 

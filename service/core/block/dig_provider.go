@@ -5,7 +5,6 @@ import (
 
 	"go.uber.org/dig"
 
-	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/mysqlcli"
 	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/snowflake"
 )
 

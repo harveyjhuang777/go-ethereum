@@ -45,6 +45,7 @@ type restService struct {
 
 func (s *restService) Run(ctx context.Context, stop chan error) {
 	engine := s.newEngine()
+	engine.SetTrustedProxies(nil)
 	s.setRoutes(engine)
 
 	if err := engine.Run(s.in.Config.GetAppConfig().GetGinConfig().Address); err != nil {
