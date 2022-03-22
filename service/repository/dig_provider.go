@@ -21,8 +21,9 @@ func NewRepository(in digIn) digOut {
 		self = &packet{
 			in: in,
 			digOut: digOut{
-				BlockRepository:       newBlockRepository(in),
-				TransactionRepository: newTransactionRepository(in),
+				BlockRepository:          newBlockRepository(in),
+				TransactionRepository:    newTransactionRepository(in),
+				TransactionRepositoryLog: newTransactionLogRepository(in),
 			},
 		}
 	})
@@ -63,6 +64,7 @@ type packet struct {
 type digOut struct {
 	dig.Out
 
-	BlockRepository       IBlock
-	TransactionRepository ITransaction
+	BlockRepository          IBlock
+	TransactionRepository    ITransaction
+	TransactionRepositoryLog ITransactionLog
 }
