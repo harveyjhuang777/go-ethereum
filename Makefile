@@ -10,3 +10,5 @@ start_srv:
 
 run_test:
 	go test -v ./...
+
+up_mac: up_db start_srv
