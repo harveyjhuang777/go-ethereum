@@ -12,6 +12,7 @@ import (
 type IBlockController interface {
 	GetBlocks(ctx *gin.Context)
 	GetBlockDetail(ctx *gin.Context)
+	GetTransactionDetail(ctx *gin.Context)
 }
 
 func newBlockController(in digIn) IBlockController {
@@ -63,6 +64,22 @@ func (ctl *blockCtrl) GetBlockDetail(ctx *gin.Context) {
 	}
 
 	resp, err := ctl.in.BlockDetailUseCase.Handle(ctx, id)
+	if err != nil {
+		respondError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, resp)
+}
+
+func (ctl *blockCtrl) GetTransactionDetail(ctx *gin.Context) {
+	hash := ctx.Param("txHash")
+	if hash == "" {
+		respondError(ctx, codebook.ErrInvalidRequest)
+		return
+	}
+
+	resp, err := ctl.in.TransactionDetailUseCase.Handle(ctx, hash)
 	if err != nil {
 		respondError(ctx, err)
 		return

@@ -11,4 +11,5 @@ func (s *restService) setBlockAPIRoutes(parentRouteGroup *gin.RouterGroup) {
 
 	privateRouteGroup.GET("/blocks", s.in.BlockController.GetBlocks)
 	privateRouteGroup.GET("/blocks/:id", s.in.BlockController.GetBlockDetail)
+	privateRouteGroup.GET("/transaction/:txHash", s.in.BlockController.GetTransactionDetail)
 }

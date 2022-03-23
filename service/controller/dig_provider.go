@@ -37,9 +37,10 @@ type packet struct {
 type digIn struct {
 	dig.In
 
-	Logger             logger.ILogger
-	BlockListUseCase   block.IBlockList
-	BlockDetailUseCase block.IBlockDetail
+	Logger                   logger.ILogger
+	BlockListUseCase         block.IBlockList
+	BlockDetailUseCase       block.IBlockDetail
+	TransactionDetailUseCase block.ITransactionDetail
 }
 
 type digOut struct {

@@ -13,6 +13,7 @@ type ITransaction interface {
 	Update(ctx context.Context, db *gorm.DB, transaction *model.Transaction) error
 	First(ctx context.Context, db *gorm.DB, id int64) (*model.Transaction, error)
 	List(ctx context.Context, db *gorm.DB, condFunc ...func(*gorm.DB) *gorm.DB) ([]*model.Transaction, error)
+	FirstByHash(ctx context.Context, db *gorm.DB, hash string) (*model.Transaction, error)
 }
 
 type transactionRepository struct {
@@ -55,4 +56,13 @@ func (repo *transactionRepository) List(ctx context.Context, db *gorm.DB, condFu
 	}
 
 	return resp, nil
+}
+
+
+func (repo *transactionRepository) FirstByHash(ctx context.Context, db *gorm.DB, hash string) (*model.Transaction, error) {
+	var resp model.Transaction
+	if err := db.Where("hash = ?", hash).First(&resp).Error; err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }

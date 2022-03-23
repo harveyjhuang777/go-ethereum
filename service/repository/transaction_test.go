@@ -164,6 +164,30 @@ func (s *transactionTestSuite) TestList() {
 	s.Require().EqualValues(2, resp[0].ID)
 }
 
+func (s *transactionTestSuite) TestFirstByHash() {
+	expected := &model.Transaction{
+		ID:      1,
+		BlockID: 1,
+		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:   21,
+		Value:   4290000000000000,
+	}
+
+	resp, err := s.app.TransactionRepository.FirstByHash(s.ctx, s.app.DB.Session(), expected.Hash)
+	// Test first
+	s.Require().Nil(err)
+	s.Require().EqualValues(expected.From, resp.From)
+	s.Require().EqualValues(expected.Hash, resp.Hash)
+	s.Require().EqualValues(expected.Value, resp.Value)
+
+	// Test Record Not Found
+	resp, err = s.app.TransactionRepository.FirstByHash(s.ctx, s.app.DB.Session(), "")
+	s.Require().Nil(resp)
+	s.Require().ErrorIs(gorm.ErrRecordNotFound, err)
+}
+
 func TestTransactionRepository(t *testing.T) {
 	suite.Run(t, &transactionTestSuite{})
 }

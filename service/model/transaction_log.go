@@ -14,3 +14,8 @@ type TransactionLog struct {
 func (TransactionLog) TableName() string {
 	return "transaction_log"
 }
+
+type TransactionLogList struct {
+	Index int64  `json:"index"`
+	Data  string `json:"data"`
+}
