@@ -8,6 +8,6 @@ var (
 	ErrServer   = xerrors.New("server error")
 
 	//400
-	ErrNoData         = xerrors.New("no data")
+	ErrDataNotExist   = xerrors.New("data not exist")
 	ErrInvalidRequest = xerrors.New("invalid request")
 )

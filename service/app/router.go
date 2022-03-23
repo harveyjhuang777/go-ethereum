@@ -10,4 +10,5 @@ func (s *restService) setBlockAPIRoutes(parentRouteGroup *gin.RouterGroup) {
 	privateRouteGroup := parentRouteGroup.Group("")
 
 	privateRouteGroup.GET("/blocks", s.in.BlockController.GetBlocks)
+	privateRouteGroup.GET("/blocks/:id", s.in.BlockController.GetBlockDetail)
 }

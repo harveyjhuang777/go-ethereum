@@ -11,10 +11,10 @@ import (
 
 func respondError(ctx *gin.Context, err error) {
 	if multipleErrorsIs(err, codebook.ErrDatabase, codebook.ErrServer) {
-		ctx.JSON(http.StatusInternalServerError, err)
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	ctx.JSON(http.StatusBadRequest, err)
+	ctx.JSON(http.StatusBadRequest, err.Error())
 }
 
 func multipleErrorsIs(target error, expects ...error) bool {

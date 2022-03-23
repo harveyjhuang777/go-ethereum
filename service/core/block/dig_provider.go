@@ -21,7 +21,8 @@ func NewBlock(in digIn) digOut {
 		self = &packet{
 			in: in,
 			digOut: digOut{
-				BlockListUseCase: newBlockList(in),
+				BlockListUseCase:   newBlockList(in),
+				BlockDetailUseCase: newBlockDetail(in),
 			},
 		}
 	})
@@ -36,7 +37,8 @@ type digIn struct {
 	IdGenerator snowflake.IIDGenerator
 	Logger      logger.ILogger
 
-	BlockRepository repository.IBlock
+	BlockRepository       repository.IBlock
+	TransactionRepository repository.ITransaction
 }
 
 type packet struct {
@@ -48,5 +50,6 @@ type packet struct {
 type digOut struct {
 	dig.Out
 
-	BlockListUseCase IBlockList
+	BlockListUseCase   IBlockList
+	BlockDetailUseCase IBlockDetail
 }
