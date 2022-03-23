@@ -10,5 +10,4 @@ var (
 	//400
 	ErrNoData         = xerrors.New("no data")
 	ErrInvalidRequest = xerrors.New("invalid request")
-	ErrWrongSort      = xerrors.New("sort should be field.orderDirection, orderDirection should be asc or desc")
 )

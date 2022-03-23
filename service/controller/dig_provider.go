@@ -4,6 +4,9 @@ import (
 	"sync"
 
 	"go.uber.org/dig"
+
+	"github.com/harveyjhuang777/go-ethereum/service/core/block"
+	"github.com/harveyjhuang777/go-ethereum/service/util/logger"
 )
 
 var (
@@ -11,11 +14,13 @@ var (
 	self *packet
 )
 
-func NewRestCtl(in digIn) digOut {
+func NewRestController(in digIn) digOut {
 	once.Do(func() {
 		self = &packet{
-			in:     in,
-			digOut: digOut{},
+			in: in,
+			digOut: digOut{
+				BlockController: newBlockController(in),
+			},
 		}
 
 	})
@@ -31,8 +36,13 @@ type packet struct {
 
 type digIn struct {
 	dig.In
+
+	Logger           logger.ILogger
+	BlockListUseCase block.IBlockList
 }
 
 type digOut struct {
 	dig.Out
+
+	BlockController IBlockController
 }

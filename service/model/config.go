@@ -18,6 +18,7 @@ type MySQLOps struct {
 	Database string `mapstructure:"database"`
 	Address  string `mapstructure:"address"`
 	Username string `mapstructure:"username"`
+	Debug    bool   `mapstructure:"debug"`
 }
 
 type AppConfig struct {

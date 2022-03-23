@@ -18,3 +18,14 @@ type Block struct {
 func (Block) TableName() string {
 	return "block"
 }
+
+type BlockListResp struct {
+	Blocks []*BlockList `json:"blocks"`
+}
+
+type BlockList struct {
+	Number     *int    `json:"block_number"`
+	Hash       *string `json:"block_hash"`
+	Time       int64   `json:"block_time"`
+	ParentHash string  `json:"parent_hash"`
+}

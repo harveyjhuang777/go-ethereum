@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 
+	"github.com/harveyjhuang777/go-ethereum/service/controller"
 	"github.com/harveyjhuang777/go-ethereum/service/util/config"
 	"github.com/harveyjhuang777/go-ethereum/service/util/logger"
 )
@@ -33,6 +34,8 @@ type restServiceIn struct {
 	dig.In
 	Config config.IConfig
 	Logger logger.ILogger
+
+	BlockController controller.IBlockController
 }
 
 type IService interface {
@@ -63,8 +66,6 @@ func (s *restService) setRoutes(engine *gin.Engine) {
 	engine.Use(
 		gin.Logger(), // log 之後會換成自定義的 log
 		gin.Recovery(),
-
-		//s.in.AuthMiddleware.Handle,
 	)
 
 	// 設定路由

@@ -52,6 +52,10 @@ func initWithConfig(opsCfg model.MySQLOps) IMySQLClient {
 		panic(err)
 	}
 
+	if opsCfg.Debug {
+		db = db.Debug()
+	}
+
 	self.in.Logger.Info(context.Background(), fmt.Sprintf("Database [%s] Connect success", opsCfg.Database))
 
 	cli = &DBClient{db}

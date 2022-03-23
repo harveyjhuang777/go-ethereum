@@ -5,7 +5,10 @@ import (
 
 	"go.uber.org/dig"
 
+	"github.com/harveyjhuang777/go-ethereum/service/repository"
+	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/dbcli"
 	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/snowflake"
+	"github.com/harveyjhuang777/go-ethereum/service/util/logger"
 )
 
 var (
@@ -16,8 +19,10 @@ var (
 func NewBlock(in digIn) digOut {
 	once.Do(func() {
 		self = &packet{
-			in:     in,
-			digOut: digOut{},
+			in: in,
+			digOut: digOut{
+				BlockListUseCase: newBlockList(in),
+			},
 		}
 	})
 
@@ -27,8 +32,11 @@ func NewBlock(in digIn) digOut {
 type digIn struct {
 	dig.In
 
-	MySQLCli    dbcli.IMySQLClient
+	DB          dbcli.IMySQLClient
 	IdGenerator snowflake.IIDGenerator
+	Logger      logger.ILogger
+
+	BlockRepository repository.IBlock
 }
 
 type packet struct {
@@ -39,4 +47,6 @@ type packet struct {
 
 type digOut struct {
 	dig.Out
+
+	BlockListUseCase IBlockList
 }
