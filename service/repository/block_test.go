@@ -50,18 +50,15 @@ func (s *blockTestSuite) SetupSuite() {
 
 func (s *blockTestSuite) SetupTest() {
 	now := time.Now().UTC()
-	number := 436
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae"
-	basicTestCase := &model.Block{
-		ID:         1,
-		Time:       now.Unix(),
+	basicTestCase1 := &model.Block{
+		Number:     1,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae",
+		Time:       uint64(now.Unix()),
 		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	basicTestCase.Number = &number
-	basicTestCase.Hash = &hash
 
 	// Test insert
-	s.Require().Nil(s.app.DB.Session().Create(basicTestCase).Error)
+	s.Require().Nil(s.app.DB.Session().Create(basicTestCase1).Error)
 }
 
 func (s *blockTestSuite) TearDownTest() {
@@ -71,15 +68,12 @@ func (s *blockTestSuite) TearDownTest() {
 func (s *blockTestSuite) TestInsert() {
 	// Test duplicate insert on PK
 	now := time.Now().UTC()
-	number := 436
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae"
 	testCase1 := &model.Block{
-		ID:         1,
-		Time:       now.Unix(),
+		Number:     1,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae",
+		Time:       uint64(now.Unix()),
 		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	testCase1.Number = &number
-	testCase1.Hash = &hash
 
 	err := s.app.BlockRepository.Insert(s.ctx, s.app.DB.Session(), testCase1)
 	s.Require().NotEmpty(err)
@@ -90,7 +84,7 @@ func (s *blockTestSuite) TestUpdate() {
 	testCase1, err := s.app.BlockRepository.First(s.ctx, s.app.DB.Session(), 1)
 	s.Require().Nil(err)
 
-	*testCase1.Hash = "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21bc"
+	testCase1.Hash = "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21bc"
 	s.Require().Nil(s.app.BlockRepository.Update(s.ctx, s.app.DB.Session(), testCase1))
 
 	resp, err := s.app.BlockRepository.First(s.ctx, s.app.DB.Session(), 1)
@@ -102,15 +96,12 @@ func (s *blockTestSuite) TestUpdate() {
 
 func (s *blockTestSuite) TestFirst() {
 	now := time.Now().UTC()
-	number := 436
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae"
 	expected := &model.Block{
-		ID:         1,
-		Time:       now.Unix(),
+		Number:     1,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae",
+		Time:       uint64(now.Unix()),
 		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	expected.Number = &number
-	expected.Hash = &hash
 
 	resp, err := s.app.BlockRepository.First(s.ctx, s.app.DB.Session(), 1)
 	// Test first
@@ -127,15 +118,12 @@ func (s *blockTestSuite) TestFirst() {
 
 func (s *blockTestSuite) TestList() {
 	now := time.Now().UTC()
-	number := 437
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21cd"
 	testCase1 := &model.Block{
-		ID:         2,
-		Time:       now.Unix(),
-		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a53",
+		Number:     2,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d22ae",
+		Time:       uint64(now.Unix()),
+		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	testCase1.Number = &number
-	testCase1.Hash = &hash
 
 	s.Require().Empty(s.app.BlockRepository.Insert(s.ctx, s.app.DB.Session(), testCase1))
 
@@ -149,7 +137,7 @@ func (s *blockTestSuite) TestList() {
 	resp, err = s.app.BlockRepository.List(s.ctx, s.app.DB.Session(), condFunc)
 	s.Require().Empty(err)
 	s.Require().Equal(1, len(resp))
-	s.Require().EqualValues(2, resp[0].ID)
+	s.Require().EqualValues(2, resp[0].Number)
 }
 
 func TestBlockRepository(t *testing.T) {

@@ -8,7 +8,11 @@ import (
 
 func provideApp(binder *dig.Container) {
 	// App
-	if err := binder.Provide(app.NewRestService); err != nil {
+	if err := binder.Provide(app.NewApiService); err != nil {
+		panic(err)
+	}
+
+	if err := binder.Provide(app.NewIndexerService); err != nil {
 		panic(err)
 	}
 }

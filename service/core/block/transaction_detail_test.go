@@ -11,6 +11,7 @@ import (
 	"github.com/harveyjhuang777/go-ethereum/service/model"
 	"github.com/harveyjhuang777/go-ethereum/service/repository"
 	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/dbcli"
+	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/ethcli"
 	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/snowflake"
 	"github.com/harveyjhuang777/go-ethereum/service/util/codebook"
 	"github.com/harveyjhuang777/go-ethereum/service/util/config"
@@ -41,6 +42,7 @@ func (s *transactionDetailSuite) SetupSuite() {
 	s.Require().Nil(binder.Provide(config.NewConfig))
 	s.Require().Nil(binder.Provide(dbcli.NewDBClient))
 	s.Require().Nil(binder.Provide(logger.NewSysLog))
+	s.Require().Nil(binder.Provide(ethcli.NewEthCli))
 	s.Require().Nil(binder.Provide(snowflake.NewIDGenerator))
 	s.Require().Nil(binder.Provide(repository.NewRepository))
 	s.Require().Nil(binder.Invoke(func(app transactionDetailTestApp) {
@@ -54,37 +56,33 @@ func (s *transactionDetailSuite) SetupSuite() {
 
 func (s *transactionDetailSuite) SetupTest() {
 	now := time.Now().UTC()
-	number := 436
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae"
 	basicTestCase1 := &model.Block{
-		ID:         1,
-		Time:       now.Unix(),
+		Number:     1,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae",
+		Time:       uint64(now.Unix()),
 		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	basicTestCase1.Number = &number
-	basicTestCase1.Hash = &hash
 
 	// Test insert
 	s.Require().Nil(s.app.DB.Session().Create(basicTestCase1).Error)
 
 	basicTestCase2 := &model.Transaction{
-		ID:      1,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   21,
-		Value:   4290000000000000,
+		BlockNumber: basicTestCase1.Number,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       21,
+		Value:       4290000000000000,
 	}
 
 	// Test insert
 	s.Require().Nil(s.app.DB.Session().Create(basicTestCase2).Error)
 
 	basicTestCase := &model.TransactionLog{
-		ID:            1,
-		TransactionID: 1,
-		Index:         1,
-		Data:          "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		ID:              1,
+		TransactionHash: basicTestCase2.Hash,
+		Index:           1,
+		Data:            "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
 	}
 
 	// Test insert
@@ -99,13 +97,12 @@ func (s *transactionDetailSuite) TearDownTest() {
 
 func (s *transactionDetailSuite) TestDetail() {
 	testCase1 := &model.Transaction{
-		ID:      2,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df1",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b16d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374433bb",
-		Nonce:   22,
-		Value:   4190000000000000,
+		BlockNumber: 1,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df1",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b16d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374433bb",
+		Nonce:       22,
+		Value:       4190000000000000,
 	}
 
 	s.Require().Empty(s.app.DB.Session().Create(testCase1).Error)

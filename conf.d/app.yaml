@@ -4,4 +4,4 @@ ops_config:
     username: 'root'
     password: '1qaz2wsx'
     database: 'ethereum'
-    debug: true
+    debug: false

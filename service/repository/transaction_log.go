@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/harveyjhuang777/go-ethereum/service/model"
 )
@@ -24,7 +25,9 @@ func newTransactionLogRepository(in digIn) ITransactionLog {
 }
 
 func (repo *transactionLogRepository) Insert(ctx context.Context, db *gorm.DB, transactionLog *model.TransactionLog) error {
-	if err := db.Create(transactionLog).Error; err != nil {
+	if err := db.Clauses(clause.OnConflict{
+		UpdateAll: true,
+	}).Create(transactionLog).Error; err != nil {
 		return err
 	}
 	return nil

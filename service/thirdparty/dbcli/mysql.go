@@ -17,14 +17,14 @@ import (
 var (
 	once sync.Once
 	self *packet
-	cli  *DBClient
+	cli  *dbClient
 )
 
 type IMySQLClient interface {
 	Session() *gorm.DB
 }
 
-type DBClient struct {
+type dbClient struct {
 	client *gorm.DB
 }
 
@@ -58,13 +58,13 @@ func initWithConfig(opsCfg model.MySQLOps) IMySQLClient {
 
 	self.in.Logger.Info(context.Background(), fmt.Sprintf("Database [%s] Connect success", opsCfg.Database))
 
-	cli = &DBClient{db}
+	cli = &dbClient{db}
 
 	return cli
 }
 
 // Session creates an original gorm.DB session.
-func (*DBClient) Session() *gorm.DB {
+func (*dbClient) Session() *gorm.DB {
 	return cli.client.Session(&gorm.Session{})
 }
 

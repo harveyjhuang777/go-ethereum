@@ -52,37 +52,33 @@ func (s *transactionLogTestSuite) SetupSuite() {
 
 func (s *transactionLogTestSuite) SetupTest() {
 	now := time.Now().UTC()
-	number := 436
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae"
 	basicTestCase1 := &model.Block{
-		ID:         1,
-		Time:       now.Unix(),
+		Number:     1,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae",
+		Time:       uint64(now.Unix()),
 		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	basicTestCase1.Number = &number
-	basicTestCase1.Hash = &hash
 
 	// Test insert
 	s.Require().Nil(s.app.DB.Session().Create(basicTestCase1).Error)
 
 	basicTestCase2 := &model.Transaction{
-		ID:      1,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   21,
-		Value:   4290000000000000,
+		BlockNumber: basicTestCase1.Number,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       21,
+		Value:       4290000000000000,
 	}
 
 	// Test insert
 	s.Require().Nil(s.app.DB.Session().Create(basicTestCase2).Error)
 
 	basicTestCase := &model.TransactionLog{
-		ID:            1,
-		TransactionID: 1,
-		Index:         1,
-		Data:          "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		ID:              1,
+		TransactionHash: basicTestCase2.Hash,
+		Index:           1,
+		Data:            "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
 	}
 
 	// Test insert
@@ -98,10 +94,10 @@ func (s *transactionLogTestSuite) TearDownTest() {
 func (s *transactionLogTestSuite) TestInsert() {
 	// Test duplicate insert on PK
 	testCase1 := &model.TransactionLog{
-		ID:            1,
-		TransactionID: 1,
-		Index:         1,
-		Data:          "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		ID:              1,
+		TransactionHash: "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		Index:           1,
+		Data:            "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
 	}
 
 	err := s.app.TransactionLogRepository.Insert(s.ctx, s.app.DB.Session(), testCase1)
@@ -110,10 +106,10 @@ func (s *transactionLogTestSuite) TestInsert() {
 
 func (s *transactionLogTestSuite) TestList() {
 	testCase1 := &model.TransactionLog{
-		ID:            2,
-		TransactionID: 1,
-		Index:         2,
-		Data:          "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df3",
+		ID:              2,
+		TransactionHash: "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		Index:           2,
+		Data:            "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df3",
 	}
 
 	s.Require().Empty(s.app.TransactionLogRepository.Insert(s.ctx, s.app.DB.Session(), testCase1))

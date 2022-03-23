@@ -38,7 +38,7 @@ func (uc *blockDetail) Handle(ctx context.Context, id int64) (*model.BlockDetail
 	}
 
 	condFunc := func(db *gorm.DB) *gorm.DB {
-		return db.Where("block_id = ?", id)
+		return db.Where("block_number= ?", id)
 	}
 
 	txnList, err := uc.in.TransactionRepository.List(ctx, db, condFunc)

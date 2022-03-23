@@ -22,8 +22,9 @@ var (
 type SrvApp struct {
 	dig.In
 
-	RestService app.IService
-	MySQLClient dbcli.IMySQLClient
+	RestService  app.IApiService
+	IndexService app.IIndexerService
+	MySQLClient  dbcli.IMySQLClient
 }
 
 func initServer(app SrvApp) {
@@ -49,5 +50,6 @@ func main() {
 		panic(err)
 	}
 
+	go srvApp.IndexService.Run(ctx)
 	srvApp.RestService.Run(ctx, stop)
 }

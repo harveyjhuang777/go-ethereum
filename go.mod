@@ -4,9 +4,11 @@ go 1.15
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/ethereum/go-ethereum v1.10.16
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/jinzhu/copier v0.3.5
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	go.uber.org/dig v1.14.0

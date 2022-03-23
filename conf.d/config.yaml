@@ -5,3 +5,6 @@ app_config:
     level: "debug"
   gin_config:
     address: ":8888"
+  eth_config:
+    #    endpoint: "https://data-seed-prebsc-2-s3.binance.org:8545/"
+    endpoint: "wss://bsc-ws-node.nariox.org:443"

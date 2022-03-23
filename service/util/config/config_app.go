@@ -14,3 +14,7 @@ func (c *setup) GetLogConfig() model.LogConfig {
 func (c *setup) GetGinConfig() model.GinConfig {
 	return c.AppConfig.GinConfig
 }
+
+func (c *setup) GetGEthConfig() model.EthConfig {
+	return c.AppConfig.EthConfig
+}

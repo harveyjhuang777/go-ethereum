@@ -7,6 +7,7 @@ type IOpsConfig interface {
 type IAppConfig interface {
 	GetLogConfig() LogConfig
 	GetGinConfig() GinConfig
+	GetGEthConfig() EthConfig
 }
 
 type OpsConfig struct {
@@ -24,6 +25,7 @@ type MySQLOps struct {
 type AppConfig struct {
 	LogConfig LogConfig `mapstructure:"log_config"`
 	GinConfig GinConfig `mapstructure:"gin_config"`
+	EthConfig EthConfig `mapstructure:"eth_config"`
 }
 
 type LogConfig struct {
@@ -34,4 +36,8 @@ type LogConfig struct {
 
 type GinConfig struct {
 	Address string `mapstructure:"address"`
+}
+
+type EthConfig struct {
+	Endpoint string `mapstructure:"endpoint"`
 }

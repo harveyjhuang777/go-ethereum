@@ -38,7 +38,7 @@ func (uc *transactionDetail) Handle(ctx context.Context, hash string) (*model.Tr
 	}
 
 	condFunc := func(db *gorm.DB) *gorm.DB {
-		return db.Where("transaction_id = ?", transaction.ID)
+		return db.Where("transaction_hash = ?", transaction.Hash)
 	}
 
 	logs, err := uc.in.TransactionLogRepository.List(ctx, db, condFunc)

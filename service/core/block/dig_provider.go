@@ -7,6 +7,7 @@ import (
 
 	"github.com/harveyjhuang777/go-ethereum/service/repository"
 	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/dbcli"
+	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/ethcli"
 	"github.com/harveyjhuang777/go-ethereum/service/thirdparty/snowflake"
 	"github.com/harveyjhuang777/go-ethereum/service/util/logger"
 )
@@ -24,6 +25,7 @@ func NewBlock(in digIn) digOut {
 				BlockListUseCase:         newBlockList(in),
 				BlockDetailUseCase:       newBlockDetail(in),
 				TransactionDetailUseCase: newTransactionDetail(in),
+				BlockInsert:              newBlockInsert(in),
 			},
 		}
 	})
@@ -37,6 +39,7 @@ type digIn struct {
 	DB          dbcli.IMySQLClient
 	IdGenerator snowflake.IIDGenerator
 	Logger      logger.ILogger
+	EthApiCli   ethcli.IEthCli
 
 	BlockRepository          repository.IBlock
 	TransactionRepository    repository.ITransaction
@@ -55,4 +58,5 @@ type digOut struct {
 	BlockListUseCase         IBlockList
 	BlockDetailUseCase       IBlockDetail
 	TransactionDetailUseCase ITransactionDetail
+	BlockInsert              IBlockInsert
 }

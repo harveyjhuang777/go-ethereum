@@ -51,31 +51,27 @@ func (s *transactionTestSuite) SetupSuite() {
 
 func (s *transactionTestSuite) SetupTest() {
 	now := time.Now().UTC()
-	number := 436
-	hash := "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae"
 	basicTestCase1 := &model.Block{
-		ID:         1,
-		Time:       now.Unix(),
+		Number:     1,
+		Hash:       "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae",
+		Time:       uint64(now.Unix()),
 		ParentHash: "0xe99e022112df268087ea7eafaf4790497fd21dbeeb6bd7a1721df161a6657a54",
 	}
-	basicTestCase1.Number = &number
-	basicTestCase1.Hash = &hash
 
 	// Test insert
 	s.Require().Nil(s.app.DB.Session().Create(basicTestCase1).Error)
 
-	basicTestCase := &model.Transaction{
-		ID:      1,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   21,
-		Value:   4290000000000000,
+	basicTestCase2 := &model.Transaction{
+		BlockNumber: basicTestCase1.Number,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       21,
+		Value:       4290000000000000,
 	}
 
 	// Test insert
-	s.Require().Nil(s.app.DB.Session().Create(basicTestCase).Error)
+	s.Require().Nil(s.app.DB.Session().Create(basicTestCase2).Error)
 }
 
 func (s *transactionTestSuite) TearDownTest() {
@@ -86,13 +82,12 @@ func (s *transactionTestSuite) TearDownTest() {
 func (s *transactionTestSuite) TestInsert() {
 	// Test duplicate insert on PK
 	testCase1 := &model.Transaction{
-		ID:      1,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   21,
-		Value:   4290000000000000,
+		BlockNumber: 1,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       21,
+		Value:       4290000000000000,
 	}
 
 	err := s.app.TransactionRepository.Insert(s.ctx, s.app.DB.Session(), testCase1)
@@ -104,10 +99,10 @@ func (s *transactionTestSuite) TestUpdate() {
 	testCase1, err := s.app.TransactionRepository.First(s.ctx, s.app.DB.Session(), 1)
 	s.Require().Nil(err)
 
-	testCase1.Hash = "0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21bc"
+	testCase1.From = "123"
 	s.Require().Nil(s.app.TransactionRepository.Update(s.ctx, s.app.DB.Session(), testCase1))
 
-	resp, err := s.app.TransactionRepository.First(s.ctx, s.app.DB.Session(), 1)
+	resp, err := s.app.TransactionRepository.FirstByHash(s.ctx, s.app.DB.Session(), testCase1.Hash)
 	s.Require().Nil(err)
 	s.Require().Equal(resp.Hash, testCase1.Hash)
 	s.Require().Equal(resp.CreatedAt, testCase1.CreatedAt)
@@ -116,13 +111,12 @@ func (s *transactionTestSuite) TestUpdate() {
 
 func (s *transactionTestSuite) TestFirst() {
 	expected := &model.Transaction{
-		ID:      1,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   21,
-		Value:   4290000000000000,
+		BlockNumber: 1,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       21,
+		Value:       4290000000000000,
 	}
 
 	resp, err := s.app.TransactionRepository.First(s.ctx, s.app.DB.Session(), 1)
@@ -140,13 +134,12 @@ func (s *transactionTestSuite) TestFirst() {
 
 func (s *transactionTestSuite) TestList() {
 	testCase1 := &model.Transaction{
-		ID:      2,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df3",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   22,
-		Value:   4290000000000000,
+		BlockNumber: 1,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df3",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       22,
+		Value:       4290000000000000,
 	}
 
 	s.Require().Empty(s.app.TransactionRepository.Insert(s.ctx, s.app.DB.Session(), testCase1))
@@ -161,18 +154,17 @@ func (s *transactionTestSuite) TestList() {
 	resp, err = s.app.TransactionRepository.List(s.ctx, s.app.DB.Session(), condFunc)
 	s.Require().Empty(err)
 	s.Require().Equal(1, len(resp))
-	s.Require().EqualValues(2, resp[0].ID)
+	s.Require().EqualValues(testCase1.Hash, resp[0].Hash)
 }
 
 func (s *transactionTestSuite) TestFirstByHash() {
 	expected := &model.Transaction{
-		ID:      1,
-		BlockID: 1,
-		Hash:    "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
-		From:    "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
-		To:      "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
-		Nonce:   21,
-		Value:   4290000000000000,
+		BlockNumber: 1,
+		Hash:        "0x1d59ff54b1eb26b013ce3cb5fc9dab3705b415a67127a003c3e61eb445bb8df2",
+		From:        "0xa7d9ddbe1f17865597fbd27ec712455208b6b76d",
+		To:          "0xf02c1c8e6114b1dbe8937a39260b5b0a374432bb",
+		Nonce:       21,
+		Value:       4290000000000000,
 	}
 
 	resp, err := s.app.TransactionRepository.FirstByHash(s.ctx, s.app.DB.Session(), expected.Hash)
